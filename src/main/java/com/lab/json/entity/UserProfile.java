@@ -15,6 +15,7 @@ public class UserProfile {
     private String email;
     private String bio;
     private String phone;
+    private String imageUrl;
 
     public UserProfile() {}
 
@@ -34,4 +35,7 @@ public class UserProfile {
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }

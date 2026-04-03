@@ -35,6 +35,7 @@ public class UserProfileController {
         p.setEmail(updated.getEmail());
         p.setBio(updated.getBio());
         p.setPhone(updated.getPhone());
+        p.setImageUrl(updated.getImageUrl());
         return repository.save(p);
     }
 

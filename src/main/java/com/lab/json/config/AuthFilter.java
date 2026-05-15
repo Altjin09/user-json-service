@@ -25,15 +25,16 @@ public class AuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-    	
-    	if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-    	    response.setStatus(HttpServletResponse.SC_OK);
-    	    filterChain.doFilter(request, response);
-    	    return;
-    	}
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setHeader("Access-Control-Allow-Origin", "https://shark-app-eawuy.ondigitalocean.app");
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+            response.setStatus(HttpServletResponse.SC_OK);
+            return; // ← filterChain дуудахгүй
+        }
 
         String path = request.getRequestURI();
-
         if (path.startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;
@@ -41,7 +42,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
         System.out.println("Authorization header: " + authHeader);
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(401);
             response.getWriter().write("Missing Authorization");
@@ -50,7 +50,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         System.out.println("Extracted token: " + token);
-
         ValidateResult result = soapAuthClient.validateToken(token);
         System.out.println("SOAP validate result valid = " + result.isValid());
         System.out.println("SOAP validate result userId = " + result.getUserId());
@@ -64,7 +63,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
         request.setAttribute("userId", result.getUserId());
         request.setAttribute("username", result.getUsername());
-
         filterChain.doFilter(request, response);
     }
 }
